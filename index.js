@@ -25,42 +25,27 @@ function getUserNumber() {
   }
 }
 
-function figureOutHowManyStrike(computer, user) {
+function matchNumbers(computer, user) {
   const strikeNum = user.filter((item, ind) => item === computer[ind]);
-  return strikeNum.length;
-}
 
-function figureOutHowManyBall(computer, user) {
   const noStrikeNum = user.filter((item, index) => item !== computer[index]);
   const BallNum = noStrikeNum.filter((item) => computer.includes(item));
-  return BallNum.length;
+
+  return [strikeNum.length, BallNum.length];
 }
 
-function convertStrike(numOfStrike) {
-  if (numOfStrike === 0) {
-    return "";
-  }
-  if (numOfStrike === 3) {
+function convertToMessage(matchNum) {
+  const [strikeNum, BallNum] = matchNum;
+
+  if (matchNum.every((item) => item === 0)) return "Nothing";
+  if (strikeNum === 3) {
     restartBtn.style.display = "block";
     return "Home Run!";
   }
-  return `${numOfStrike} strike`;
-}
 
-function convertBall(numOfBall) {
-  if (numOfBall === 0) {
-    return "";
-  }
-  return `${numOfBall} Ball`;
-}
-
-function showOnScreen(numOfStrike, numOfBall) {
-  let result = `${numOfStrike} ${numOfBall}`;
-  if (result == " ") {
-    return "Nothing";
-  } else {
-    return result;
-  }
+  return `${strikeNum !== 0 ? strikeNum + "strike" : ""} ${
+    BallNum !== 0 ? BallNum + "Ball" : ""
+  }`;
 }
 
 function refresh() {
@@ -74,22 +59,18 @@ restartBtn.addEventListener("click", refresh);
 const result = document.querySelector("#result");
 
 function play(computer, user) {
-  const ballnumber = figureOutHowManyBall(computer, user);
-  const strikenumber = figureOutHowManyStrike(computer, user);
-  const ballmessage = convertBall(ballnumber);
-  const strikemessage = convertStrike(strikenumber);
-  const finalresult = showOnScreen(strikemessage, ballmessage);
-  return finalresult;
+  const matchNumber = matchNumbers(computer, user);
+  const result = convertToMessage(matchNumber);
+  return result;
 }
-
 const computerNumber = creatComputerNumber();
 
 function baseBallGame(event) {
   event.preventDefault();
   console.log(computerNumber);
   const userNumber = getUserNumber();
-  const compare = play(computerNumber, userNumber);
-  result.innerHTML = compare;
+  const finalReuslt = play(computerNumber, userNumber);
+  result.innerHTML = finalReuslt;
 }
 
 submit.addEventListener("click", baseBallGame);
