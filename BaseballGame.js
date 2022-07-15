@@ -53,30 +53,30 @@ export class BaseballGame {
   #matchNumbers(userNum) {
     const strikeNum = userNum.filter(
       (item, ind) => item === this.#computerNumber[ind]
-    );
+    ).length;
 
-    const noStrikeNum = userNum.filter(
-      (item, index) => item !== this.#computerNumber[index]
-    );
-    const BallNum = noStrikeNum.filter((item) =>
-      this.#computerNumber.includes(item)
-    );
+    const ballNum = userNum
+      .filter((item, index) => item !== this.#computerNumber[index])
+      .filter((item) => this.#computerNumber.includes(item)).length;
 
-    return [strikeNum.length, BallNum.length];
+    return [strikeNum, ballNum];
   }
 
   #convertToMessage(matchNum) {
     const [strikeNum, BallNum] = matchNum;
 
-    if (matchNum.every((item) => item === 0)) return "Nothing";
-    if (strikeNum === 3) {
+    let message = `${strikeNum ? strikeNum + "strike" : ""} ${
+      BallNum ? BallNum + "Ball" : ""
+    }`;
+
+    if (matchNum.every((item) => item === 0)) {
+      message = "Nothing";
+    } else if (strikeNum === 3) {
       this.#restartBtnEl.style.display = "block";
-      return "Home Run!";
+      message = "Home Run!";
     }
 
-    return `${strikeNum !== 0 ? strikeNum + "strike" : ""} ${
-      BallNum !== 0 ? BallNum + "Ball" : ""
-    }`;
+    return message;
   }
 
   #play = (e) => {
